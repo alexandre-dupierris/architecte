@@ -21,7 +21,7 @@ else {
 //*********************************************************
 // Fonction d'affichage des works
 //*********************************************************
-export function affichageWorks(worksFiltres) {
+function affichageWorks(worksFiltres) {
     // récupération de la balise concernée
     const gallery = document.querySelector(".gallery");
     // pour chaque élément du works
@@ -46,7 +46,7 @@ export function affichageWorks(worksFiltres) {
 //*********************************************************
 // Fonction d'affichage des boutons filtres
 //*********************************************************
-export function affichageFiltres(){
+function affichageFiltres(){
     // récupération de la balise concernée
     const portfolio = document.querySelector(".portfolio");
     // on vérifie le nombre de catégories définies
@@ -78,12 +78,12 @@ export function affichageFiltres(){
 //*********************************************************
 // Fonction de tri des catégories
 //*********************************************************
-export function ecouteBoutonsFiltres(){
+function ecouteBoutonsFiltres(){
     const boutons = document.querySelectorAll(".filters button");
     // pour chaque boutons filtres
     for (const boutonFiltrer of boutons) {
         // on écoute l'évènement
-        boutonFiltrer.addEventListener("click", function() {
+        boutonFiltrer.addEventListener("click", function(event) {
             event.preventDefault();
             // on filtre les works
             const worksFiltres = works.filter(function (work) {
@@ -114,19 +114,16 @@ export function ecouteLiBouton(bouton) {
         // selon le li cliqué si login on vide la page html
         if (liItem.id === "loginItem") {
             if (liItem.innerText === "login"){
-                document.querySelector("main").innerHTML = "";
                 affichageHeader("login");
                 affichageLogin();
             }
             else if (liItem.innerText === "logout") {
-                document.querySelector("main").innerHTML = "";
                 sessionStorage.clear();
                 affichageHeader("logout");
                 affichageMain();
             }
         }
         else if (liItem.id === "projectsItem") {
-            document.querySelector("main").innerHTML = "";
             affichageHeader("logout");
             affichageMain();
         }
@@ -134,9 +131,9 @@ export function ecouteLiBouton(bouton) {
 }
 
 //*********************************************************
-// Fonction affichage du login
+// Fonction affichage du formulaire de login
 //*********************************************************
-export function affichageLogin() {
+function affichageLogin() {
     // on récupère le main
     const main = document.querySelector("main");
     // on crée le formulaire
@@ -194,7 +191,7 @@ export function affichageLogin() {
 //*********************************************************
 // Fonction tentative de connexion
 //*********************************************************
-export function connexion() {
+function connexion() {
     document.getElementById("connexion").addEventListener("click", async function(event) {
         event.preventDefault();
         // récupération des valeurs du formulaire
@@ -304,7 +301,6 @@ export function affichageHeader(loginStatus) {
     headerListe.appendChild(loginElement);
     headerListe.appendChild(imageElement);
     ecouteLiBouton("projectsItem");
-    console.log(headerListe);
 }
 
 //*********************************************************
