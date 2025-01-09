@@ -1,5 +1,6 @@
-import { affichageWorks, affichageFiltres, ecouteBoutons} from "./modules.js";
-
-affichageWorks("Tous");
-affichageFiltres();
-ecouteBoutons();
+import { affichageWorks, affichageFiltres, ecouteBoutonsFiltres, ecouteLiBouton, affichageMain, affichageHeader} from "./modules.js";
+// on affiche une première fois la page
+affichageHeader("");
+affichageMain();
+// on écoute les boutons
+ecouteLiBouton("loginItem");

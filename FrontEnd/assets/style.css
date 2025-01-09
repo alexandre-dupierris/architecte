@@ -47,6 +47,8 @@ table {
 	border-spacing: 0;
 }
 /** end reset css**/
+
+/** éléments de base **/
 body {
 	max-width: 1140px;
 	margin:auto;
@@ -62,6 +64,7 @@ section {
 	margin: 50px 0
 }
 
+/** titres **/
 h1{
 	display: flex;
 	flex-direction: column;
@@ -82,8 +85,10 @@ h2{
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 30px;
-	color: #1D6154
+	color: #1D6154;
 }
+
+/** navigation **/
 nav ul {
 	display: flex;
 	align-items: center;
@@ -93,11 +98,57 @@ nav ul {
 nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
+	cursor: pointer;
 }
 
 li:hover {
 	color: #B1663C;
 }
+.boldElement {
+	font-weight: 700;
+}
+
+/** login **/
+#loginForm {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#loginForm fieldset {
+	display: flex;
+	flex-direction: column;
+}
+#loginForm fieldset legend {
+	font-family: 'Syne';
+	font-size: 22px;
+	color: #1D6154;
+	margin-bottom: 20px;
+	text-align: center;
+	font-weight: 700;
+}
+#connexionEmail, #connexionPassword {
+	width: 379px;
+	height: 51px;
+	padding: 0;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	border: 0;
+	box-shadow: 0px 4px 14px #00000017;
+}
+#connexion {
+	padding: 10px;
+}
+#loginForm a {
+	color: #3D3D3D;
+	font-weight: 500;
+}
+
+#reponseMessage {
+	color:#B1663C;
+	margin-top: 20px;
+}
+
+/** introduction **/
 #introduction {
 	display: flex;
 	align-items: center;
@@ -110,7 +161,6 @@ li:hover {
 	margin: auto;
 	width: 80%;
 }
-
 #introduction article {
 	flex: 1
 }
@@ -121,11 +171,14 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
+
+/** portfolio **/
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
 }
 
+/** filtres **/
 .filters {
 	display: flex;
 	flex-direction: row;
@@ -152,6 +205,7 @@ li:hover {
 	;
 }
 
+/** galerie **/
 .gallery {
 	width: 100%;
 	display: grid;
@@ -159,11 +213,12 @@ li:hover {
 	grid-column-gap: 20px;
 	grid-row-gap: 20px;
 }
-
 .gallery img {
 	width: 100%;
 
 }
+
+/** contact **/
 #contact {
 	width: 50%;
 margin: auto;
@@ -181,7 +236,6 @@ margin: auto;
 	display: flex;
 	flex-direction: column;
 }
-
 #contact input {
 	height: 50px;
 	font-size: 1.2em;
@@ -195,7 +249,6 @@ margin: auto;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-
 input[type="submit"]{
 	font-family: 'Syne';
 	font-weight: 700;
@@ -207,6 +260,7 @@ input[type="submit"]{
 	border-radius: 60px ;
 }
 
+/** footer **/
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
