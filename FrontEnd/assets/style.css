@@ -2,6 +2,9 @@
    v2.0 | 20110126
    License: none (public domain)
 */
+* {
+	box-sizing: border-box;
+}
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -50,20 +53,52 @@ table {
 
 /** éléments de base **/
 body {
-	max-width: 1140px;
-	margin:auto;
+	max-width: 1440px;
+	margin: auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
-header {
+main {
 	display: flex;
+	flex-direction: column;
+	max-width: 920px;
+	margin: auto;
+	align-items: center;
+}
+header {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#contenuHeader {
+	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
-	margin: 50px 0
+	margin: 50px 0;
+	width: 100%;
+	max-width: 920px;
 }
 section {
 	margin: 50px 0
 }
 
+/** mode edition **/
+.edition {
+	display: none;
+}
+.editionVisible {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	margin: 0;
+	color: white;
+	background-color: black;
+	width: 100%;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	gap: 21px;
+}
 /** titres **/
 h1{
 	display: flex;
@@ -138,11 +173,13 @@ li:hover {
 #connexion {
 	padding: 10px;
 }
+#loginForm {
+	margin-bottom: 150px;
+}
 #loginForm a {
 	color: #3D3D3D;
 	font-weight: 500;
 }
-
 #reponseMessage {
 	color:#B1663C;
 	margin-top: 20px;
@@ -164,6 +201,9 @@ li:hover {
 #introduction article {
 	flex: 1
 }
+#introduction article p {
+	width: 80%;
+}
 #introduction h2 {
 	margin-bottom: 1em;
 }
@@ -173,12 +213,31 @@ li:hover {
 }
 
 /** portfolio **/
-#portfolio h2 {
+#portfolio > div:first-of-type h2 {
 	text-align: center;
+}
+#portfolio > div:first-of-type {
+	display:flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
 	margin-bottom: 1em;
+	gap: 20px;
+}
+#modifier {
+	display:flex;
+	flex-direction: row;
+	gap: 10px;
+	cursor: pointer;
+}
+#modifier:hover {
+	color: #B1663C;
 }
 
 /** filtres **/
+.margin {
+	margin-top: 50px;
+}
 .filters {
 	display: flex;
 	flex-direction: row;
@@ -202,7 +261,6 @@ li:hover {
 .filters button:hover {
 	color: white;
 	background-color:#1D6154;
-	;
 }
 
 /** galerie **/
@@ -218,10 +276,96 @@ li:hover {
 
 }
 
+/** modale **/
+#modale {
+	align-items: center;
+	justify-content: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height:100%;
+	background-color: #0000004D;
+}
+.modaleNone {
+	display: none;
+}
+.modaleFlex {
+	display: flex;
+}
+#fenetreModale {
+	display: flex;
+	flex-direction: column;
+	width: 50%;
+	background-color: white;
+	border-radius: 10px;
+	align-items: center;
+}
+#croixModale {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	justify-content: end;
+	padding: 40px;
+	padding-bottom: 20px;
+}
+#titreModal {
+	font-family: 'Work Sans' ;
+	text-align: center;
+	color:black;
+	margin-bottom: 60px;
+	font-weight: 400;
+}
+#modaleListe {
+	display: flex;
+	flex-direction: row;
+	width: 70%;
+	height: calc(100% - 40px);
+	flex-wrap: wrap;
+	overflow: auto;
+	border-bottom: 1px solid #B3B3B3;
+	margin-bottom: 20px;
+}
+#fiche {
+	width: calc(20% - 10px);
+	margin: 5px;
+	position: relative;
+	margin-bottom: 20px;
+}
+#fiche img {
+	width: 100%;
+}
+#fiche i {
+	position: absolute;
+	top: 5%;
+	right: 5%;
+	background-color: black;
+	color: white;
+	padding: 5px;
+	border-radius: 2px;
+	font-size: 0.5rem;
+}
+#boutonAjout {
+	color: white;
+	background-color:#1D6154;
+	height: 37px;
+	border: 1px solid #1D6154;
+	border-radius: 60px;
+	margin: 10px;
+	font-weight: 700;
+	padding-left: 20px;
+	padding-right: 20px;
+	margin-bottom: 50px;
+}
+#boutonAjout:hover {
+	color: #1D6154;
+	background-color: white;
+}
+
 /** contact **/
 #contact {
 	width: 50%;
-margin: auto;
+	margin: auto;
 }
 #contact > * {
 	text-align: center;

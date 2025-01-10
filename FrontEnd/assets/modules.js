@@ -76,7 +76,7 @@ function affichageFiltres(){
 }
 
 //*********************************************************
-// Fonction de tri des catégories
+// Fonction de filtre des catégories
 //*********************************************************
 function ecouteBoutonsFiltres(){
     const boutons = document.querySelectorAll(".filters button");
@@ -108,7 +108,7 @@ function ecouteBoutonsFiltres(){
 // Fonction des boutons li de nav : login ou projets
 //*********************************************************
 export function ecouteLiBouton(bouton) {
-    let liItem = document.getElementById(bouton);
+    const liItem = document.getElementById(bouton);
     liItem.addEventListener("click", function(event) {
         event.preventDefault();
         // selon le li cliqué si login on vide la page html
@@ -262,19 +262,37 @@ function connexion() {
 // Fonction affichage du header
 //*********************************************************
 export function affichageHeader(loginStatus) {
-    // on récupère l'état de connexion
+    // on récupère l'état de connexion grace au token et au texte contenu dans loginItem
     const loginElement = document.getElementById("loginItem");
     const token = verifierToken();
+    // on prépare les éléments pour le mode édition
+    const editionElement = document.createElement("div");
+    editionElement.classList.add("edition");
+    const contenuHeader = document.createElement("div");
+    contenuHeader.id = "contenuHeader";
     // on modifie le header
     const headerListe = document.getElementById("listeBoutons");
     headerListe.innerHTML = "";
-    // si non connecté
+    // si connecté
     if (token !== false) {
+        // on affiche le logout
         loginElement.innerText = "logout";
+        // on crée les balises du mode édition
+        editionElement.classList.add("editionVisible");
+        const editionIElement = document.createElement("i");
+        editionIElement.classList.add("fa-solid", "fa-pen-to-square");
+        const editionTexteElement = document.createElement("p");
+        editionTexteElement.innerText = "Mode édition";
+        editionElement.appendChild(editionIElement);
+        editionElement.appendChild(editionTexteElement);
     }
-    // sinon si connecté
+    // si non connecté
     else {
+        // on cache le mode édition
+        editionElement.classList.remove("editionVisible");
+        // on affiche login
         loginElement.innerText = "login";
+
     }
     // si page de login, login en gras
     if (loginStatus === "login") {
@@ -284,7 +302,10 @@ export function affichageHeader(loginStatus) {
     else {
         loginElement.classList.remove("boldElement");
     }
-    // on ajoute les éléments de la liste
+    // on ajoute les éléments
+    const h1 = document.createElement("h1");
+    h1.innerHTML = "Sophie Bluel <span>Architecte d'intérieur</span>";
+    const navigateur =  document.createElement("nav");
     const projectsElement= document.createElement ("li");
     projectsElement.id = "projectsItem";
     projectsElement.innerText = "projets";
@@ -300,6 +321,17 @@ export function affichageHeader(loginStatus) {
     headerListe.appendChild(contactElement);
     headerListe.appendChild(loginElement);
     headerListe.appendChild(imageElement);
+    navigateur.appendChild(headerListe);
+    // on construit le header
+    const header = document.querySelector("header");
+    header.innerHTML = "";
+    if (editionElement !== null) {
+        header.appendChild(editionElement);
+    }
+    contenuHeader.appendChild(h1);
+    contenuHeader.appendChild(navigateur);
+    header.appendChild(contenuHeader);
+    // on écoute le bouton vers projets
     ecouteLiBouton("projectsItem");
 }
 
@@ -320,7 +352,11 @@ export function affichageMain() {
 			</article>
 		</section>
 		<section id="portfolio">
-			<h2>Mes Projets</h2>
+			<div>
+                <h2>Mes Projets</h2>
+                <div id="modifier">
+                </div>
+            </div>
 			<div class="filters">
 			</div>
 			<div class="gallery">
@@ -340,11 +376,125 @@ export function affichageMain() {
 			</form>
 		</section>
     `;
-    // on affiche les filtres et les works
-    affichageFiltres();
+    // selon la connexion
+    const token = verifierToken();
+    const mesProjetElement = document.querySelector(".gallery");
+    const modifierElement = document.getElementById("modifier");
+    // si non connecté
+    if (token === false) {
+        // on affiche et écoute les boutons filtres
+        affichageFiltres();
+        mesProjetElement.classList.remove("margin");
+        modifierElement.classList.remove("modifierVisible");
+        ecouteBoutonsFiltres();
+    }
+    // si connecté
+    else {
+        // on affiche et écoute le bouton modifier
+        modifierElement.classList.add("modifierVisible");
+        const modifierIElement = document.createElement("i");
+        modifierIElement.classList.add("fa-solid", "fa-pen-to-square");
+        const modifierTexteElement = document.createElement("p");
+        modifierTexteElement.innerText = "modifier";
+        modifierElement.appendChild(modifierIElement);
+        modifierElement.appendChild(modifierTexteElement);
+        ecouteModifierBouton();
+        mesProjetElement.classList.add("margin");
+    }
+    // on affiche les works
     affichageWorks("Tous");
-    // on écoute les boutons filtres
-    ecouteBoutonsFiltres();
+}
+
+//*********************************************************
+// Fonction écouter le bouton modifier
+//*********************************************************
+function ecouteModifierBouton() {
+    const modifier = document.getElementById("modifier");
+    modifier.addEventListener("click", function(event) {
+        event.preventDefault();
+        // si la modale n'existe pas on la construit
+        if (!document.querySelector('#modale')) {
+            construireModale();
+            ecouteQuitterModale();
+        }
+        // on affiche la modale
+        modale.classList.add("modaleFlex");
+        modale.classList.remove("modaleNone");
+        // et on écoute quand on la quitte
+    });
+}
+
+//*********************************************************
+// Fonction écouter pour quitter la modale
+//*********************************************************
+function ecouteQuitterModale() {
+    const croixElement = document.getElementById("croixModale");
+    const modaleElement = document.getElementById("modale");
+    document.addEventListener('click', (event) => {
+        event.preventDefault();
+        console.log(event.target.id);
+        if (event.target.id === croixElement.id || event.target.id === modaleElement.id) {
+            modale.classList.remove("modaleFlex");
+            modale.classList.add("modaleNone");
+        }
+    });
+}
+
+//*********************************************************
+// Fonction construire la modale
+//*********************************************************
+function construireModale() {
+    // création de la modale
+    const modale = document.createElement("aside");
+    modale.id = "modale";
+    modale.setAttribute("aria-hidden", "true");
+    modale.role = "dialog";
+    modale.setAttribute("aria-modal", "false");
+    modale.setAttribute("aria-labbelledby", "titreModal");
+    // la croix pour quitter la modale
+    const croix = document.createElement("div");
+    croix.id = "croixModale";
+    const croixQuitter = document.createElement("i");
+    croixQuitter.classList.add("fa-solid", "fa-xmark");
+    croix.appendChild(croixQuitter);
+    // le titre de la modale
+    const titre = document.createElement("h1");
+    titre.id = "titreModal";
+    titre.innerText = "Galerie photo";
+    // l'élément de la modale
+    const fenetreModaleElement = document.createElement("div");
+    fenetreModaleElement.id = "fenetreModale";
+    fenetreModaleElement.appendChild(croix);
+    fenetreModaleElement.appendChild(titre);
+    // la liste des works
+    const modaleListe = document.createElement("div");
+    modaleListe.id = "modaleListe";
+    // pour chaque work on va afficher son image et un logo de poubelle pour la supprimer
+    for (let work of works){
+        // création des balises 
+        const divElement = document.createElement("div");
+        divElement.id = "fiche";
+        const imageElement = document.createElement("img");
+        imageElement.src = work.imageUrl;
+        imageElement.alt = work.title;
+        const poubelle = document.createElement("i");
+        poubelle.classList.add("fa-solid", "fa-trash-can");
+        // encrage des balises dans la modale
+        divElement.appendChild(imageElement);
+        divElement.appendChild(poubelle);
+        modaleListe.appendChild(divElement);
+    }
+    // création du bouton ajouter un work
+    const boutonAjout = document.createElement("button");
+    boutonAjout.id = "boutonAjout";
+    boutonAjout.innerText = "Ajouter une photo";
+
+    // on affiche la modale
+    fenetreModaleElement.appendChild(modaleListe);
+    fenetreModaleElement.appendChild(boutonAjout);
+    const main = document.querySelector("body");
+    modale.appendChild(fenetreModaleElement);
+    main.appendChild(modale);
 }
 
 //*********************************************************
