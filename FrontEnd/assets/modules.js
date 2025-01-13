@@ -57,8 +57,7 @@ function extraitCategories() {
 //*********************************************************
 // Fonction d'affichage des boutons filtres
 function affichageFiltres(){
-    // récupération de la balise concernée
-    const portfolio = document.querySelector(".portfolio");
+    // const portfolio = document.querySelector(".portfolio");
     // on vérifie le nombre de catégories définies
     // Extrait les catégories
     const categories = extraitCategories();

@@ -55,3 +55,9 @@ fichiers javascript décomposés en plusieurs fonctions :
 		appelée par la construction de la modale
 	- partie gestion du token : 
 		- fonction qui vérifie l'état du token, appelée lors des affichages des header et main
+
+--------------------------------------------------------------------
+reste à faire : 
+- écouter le bouton de suppression d'un work
+- la connexion au serveur lorsque l'architecte, connectée, veut effacer ou ajouter un work à la galerie
+- vérifier le code
