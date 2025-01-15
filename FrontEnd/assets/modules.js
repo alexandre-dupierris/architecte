@@ -4,7 +4,7 @@
 
 
 //*********************************************************
-// Fonction de récupération des works de l'architecte
+// Fonction de récupération des works via l'API
 async function fetchWorks() {
     try {
         const reponse = await fetch("http://localhost:5678/api/works");
@@ -12,10 +12,34 @@ async function fetchWorks() {
             throw new Error(`Erreur HTTP : ${reponse.status}`);
         }
         const works = await reponse.json();
-        return works;
+        const worksSimples = traitementWorks(works, null);
+        return worksSimples;
     } catch (error) {
         console.error("Erreur lors de la récupération des données :", error);
     }
+}
+
+//*********************************************************
+// Fonction de traitement des works
+function traitementWorks(works, nouvelleImage){
+    let worksSimples = [];
+    for (let i = 0 ; i < works.length ; i++) {
+        worksSimples[i] = {
+            "id": works[i].id,
+            "imageUrl": works[i].imageUrl,
+            "title": works[i].title,
+            "category": works[i].category,
+        }
+    }
+    if (nouvelleImage !== null) {
+        worksSimples.push( {
+            "id": nouvelleImage.id,
+            "imageUrl": nouvelleImage.imageUrl,
+            "title": nouvelleImage.title,
+            "category": nouvelleImage.category
+        });
+    }
+    return worksSimples;
 }
 
 //*********************************************************
@@ -23,6 +47,7 @@ async function fetchWorks() {
 function affichageWorks(worksFiltres) {
     // récupération de la balise concernée
     const gallery = document.querySelector(".gallery");
+    gallery.innerHTML = "";
     // pour chaque élément du works
     if (worksFiltres === "Tous") {
         worksFiltres = works;
@@ -43,7 +68,7 @@ function affichageWorks(worksFiltres) {
 }
 
 //*********************************************************
-// Fonction d'extraction des catégories
+// Fonction d'extraction des catégories par nom
 function extraitCategories() {
     let categories = new Array();
     for (let i = 0 ; i < works.length ; i++) {
@@ -77,7 +102,7 @@ function affichageFiltres(){
     for (let i = 0 ; i < nombreCategories ; i++) {
         // création des balises
         const boutonCategorie = document.createElement("button");
-        boutonCategorie.id = i+1;
+        boutonCategorie.id = `filtreCategorie${i+1}`;
         boutonCategorie.innerText = categoriesTAbleau[i];
         // affichage des boutons filtres
         filtres.appendChild(boutonCategorie);
@@ -101,7 +126,7 @@ function ecouteBoutonsFiltres(){
                 }
                 // sinon on retourne les works de la catégorie
                 else {
-                    return work.categoryId === parseInt(categorie);
+                    return work.category.id === parseInt(categorie.replace(/[a-zA-Z]/g, ''));
                 }
             });
             // on nettoie la page html et on affiche les works filtrés
@@ -433,6 +458,7 @@ function affichageMain() {
 // Fonction d'écoute du bouton modifier vers modale
 function ecouteModifierBouton() {
     const modifier = document.getElementById("modifier");
+    // const modale = document.getElementById("modale");
     modifier.addEventListener("click", function() {
         // on affiche la modale
         modale.classList.add("flex");
@@ -447,7 +473,7 @@ function ecouteQuitterModale() {
     const croixElement = document.getElementById("croixModaleI");
     const modaleElement = document.getElementById("modale");
     const retourElement = document.getElementById("retourModaleI");
-    document.addEventListener("click", (event) => {
+    document.addEventListener("click", function(event) {
         if (event.target.id === croixElement.id || event.target.id === modaleElement.id) {
             modale.classList.remove("flex");
         }
@@ -461,12 +487,12 @@ function ecouteQuitterModale() {
 // Fonction de remise en forme de la modale / réinitialisation de l'affichage
 function retourModale() {
     document.getElementById("titreModale").innerText = "Galerie photo";
-    document.getElementById("retourModaleI").classList.remove("flex");
+    document.getElementById("divI").classList.remove("flex");
     document.getElementById("modalForm").classList.remove("flex");
     document.getElementById("boutonsModale").classList.remove("boutonModale2");
     document.getElementById("modaleListe").classList.add("flex");
     document.getElementById("boutonAjout").classList.add("flex");
-    document.getElementById("fileImage").classList.add("flex");
+    document.getElementById("fileElement").classList.add("flex");
     document.getElementById("fileTexte").classList.add("flex");
     document.getElementById("fileBouton").classList.add("flex");
     document.getElementById("imageEnvoyee").src = "";
@@ -480,7 +506,7 @@ function construireModale() {
     // création de la modale
     const modale = document.createElement("aside");
     modale.id = "modale";
-    // modale.setAttribute("aria-hidden", "true");
+    modale.setAttribute("aria-hidden", "true");
     modale.role = "dialog";
     modale.setAttribute("aria-modal", "false");
     modale.setAttribute("aria-labbelledby", "titreModale");
@@ -488,17 +514,22 @@ function construireModale() {
     const boutonsModale = document.createElement("div");
     boutonsModale.id = "boutonsModale";
     // on crée un bouton retour qu'on n'affiche pas
+    const divI = document.createElement("div");
+    divI.id = "divI";
+    divI.classList.add("none");
     const retourI = document.createElement("i");
     retourI.id = "retourModaleI";
     retourI.classList.add("fa-solid", "fa-arrow-left");
-    boutonsModale.appendChild(retourI);
-    retourI.classList.add("none");
+    divI.appendChild(retourI);
+    boutonsModale.appendChild(divI);
     boutonsModale.classList.add("boutonModale");
     // la croix pour quitter la modale
+    const divI2 = document.createElement("div");
     const croixQuitter = document.createElement("i");
     croixQuitter.id = "croixModaleI";
     croixQuitter.classList.add("fa-solid", "fa-xmark");
-    boutonsModale.appendChild(croixQuitter);
+    divI2.appendChild(croixQuitter);
+    boutonsModale.appendChild(divI2);
     // le titre de la modale
     const titre = document.createElement("h1");
     titre.id = "titreModale";
@@ -508,25 +539,17 @@ function construireModale() {
     fenetreModaleElement.id = "fenetreModale";
     fenetreModaleElement.appendChild(boutonsModale);
     fenetreModaleElement.appendChild(titre);
+    modale.appendChild(fenetreModaleElement);
+    // on met la modale dans le main
+    const main = document.querySelector("body");
+    main.appendChild(modale);
     // la liste des works
     const modaleListe = document.createElement("div");
     modaleListe.id = "modaleListe";
     modaleListe.classList.add("none", "flex");
     // pour chaque work on va afficher son image et un logo de poubelle pour la supprimer
-    for (let work of works){
-        // création des balises 
-        const divElement = document.createElement("div");
-        divElement.id = "fiche";
-        const imageElement = document.createElement("img");
-        imageElement.src = work.imageUrl;
-        imageElement.alt = work.title;
-        const poubelle = document.createElement("i");
-        poubelle.classList.add("fa-solid", "fa-trash-can");
-        // encrage des balises dans la modale
-        divElement.appendChild(imageElement);
-        divElement.appendChild(poubelle);
-        modaleListe.appendChild(divElement);
-    }
+    fenetreModaleElement.appendChild(modaleListe);
+    affichageWorksModale();
     // on ajoute le formulaire d'ajout qu'on n'affiche pas
     const modaleFormulaire = document.createElement("form");
     modaleFormulaire.id = "modalForm";
@@ -534,10 +557,12 @@ function construireModale() {
     // dans le formulaire : le file
     const fileLabel = document.createElement("div");
     fileLabel.id = "fileLabel";
+    const fileElement = document.createElement("div");
+    fileElement.id = "fileElement";
     const fileImage = document.createElement("i");
     fileImage.id = "fileImage";
     fileImage.classList.add("fa-regular", "fa-image");
-    fileImage.classList.add("none", "flex");
+    fileElement.classList.add("none", "flex");
     const fileBouton = document.createElement("button");
     fileBouton.id = "fileBouton";
     fileBouton.innerText = "+ Ajouter photo";
@@ -547,7 +572,8 @@ function construireModale() {
     fileTexte.id = "fileTexte";
     fileTexte.innerText = "jpg, png : 4mo max";
     fileTexte.classList.add("none", "flex");
-    fileLabel.appendChild(fileImage);
+    fileElement.appendChild(fileImage);
+    fileLabel.appendChild(fileElement);
     fileLabel.appendChild(fileBouton);
     fileLabel.appendChild(fileTexte);
     const fileInput = document.createElement("input");
@@ -555,6 +581,7 @@ function construireModale() {
     fileInput.type = "file";
     fileInput.accept = "image/jpeg, image/png";
     fileInput.required = true;
+    fileInput.value = "";
     fileInput.style.display = "none";
     // dans le formulaire : le titre de l'image
     const titreLabel = document.createElement("label");
@@ -595,6 +622,7 @@ function construireModale() {
     imageEnvoyee.classList.add("none");
     fileLabel.appendChild(imageEnvoyee);
     // on construit le formulaire
+    fenetreModaleElement.appendChild(modaleFormulaire);
     modaleFormulaire.appendChild(fileLabel);
     modaleFormulaire.appendChild(fileInput);
     modaleFormulaire.appendChild(titreLabel);
@@ -607,26 +635,87 @@ function construireModale() {
     boutonAjout.id = "boutonAjout";
     boutonAjout.innerText = "Ajouter une photo";
     boutonAjout.classList.add("none", "flex");
-    // on met la modale dans le main
-    fenetreModaleElement.appendChild(modaleListe);
-    fenetreModaleElement.appendChild(modaleFormulaire);
     fenetreModaleElement.appendChild(boutonAjout);
-    const main = document.querySelector("body");
-    modale.appendChild(fenetreModaleElement);
-    main.appendChild(modale);
     // on cache la modale
     modale.classList.add("none");
     ecouteAjoutImage();
     ecouteQuitterModale();
     ecouteAjout();
+    ecouteValider();
+    ecoutePoubelle();
 }
 
 //*********************************************************
-// Fonction bouton ajout image
+// Fonction d'affichage des works dans la modale
+function affichageWorksModale(){
+    const modaleListe = document.getElementById("modaleListe");
+    modaleListe.innerHTML = "";
+    for (let work of works){
+        // création des balises 
+        const divElement = document.createElement("div");
+        // divElement.id = `fiche${work.id}`;
+        divElement.classList.add("fiche");
+        const imageElement = document.createElement("img");
+        imageElement.src = work.imageUrl;
+        imageElement.alt = work.title;
+        const poubelle = document.createElement("i");
+        poubelle.id = work.id;
+        poubelle.classList.add("fa-solid", "fa-trash-can");
+        poubelle.classList.add("poubelle");
+        // encrage des balises dans la modale
+        divElement.appendChild(imageElement);
+        divElement.appendChild(poubelle);
+        modaleListe.appendChild(divElement);
+    }
+}
+
+//*********************************************************
+// Fonction d'écoute pour la suppression d'un work
+function ecoutePoubelle() {
+    const poubelles = document.querySelectorAll(".poubelle");
+    for (let poubelle of poubelles) {
+        poubelle.addEventListener("click", async function() {
+            // Envoi de la requête DELETE
+            try {
+                const reponse = await fetch(`http://localhost:5678/api/works/${this.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${sessionStorage.getItem("authToken")}`
+                    },
+                });
+                // si la réponse n'est pas bonne on envoie l'erreur
+                if (!reponse.ok) {
+                    throw new Error(`Erreur HTTP ! Statut : ${reponse.status}`);
+                }
+                // sinon, on met à jour l'affichage dans la liste des works et la modale
+                else {
+                    const modaleListe = document.getElementById("modaleListe");
+                    for (let work of works) {
+                        if (work.id === parseInt(this.id)) {
+                            const index = works.findIndex(objet => objet.id === work.id);
+                            works.splice(index, 1);
+                            affichageWorksModale();
+                            affichageWorks(works);
+                            ecoutePoubelle();
+                            // réinitialisation de la modale
+                            retourModale();
+                        }
+                    }
+                }
+            } catch (erreur) {
+                console.error("Une erreur s'est produite :", erreur);
+            }
+        });
+    }
+}
+
+
+//*********************************************************
+// Fonction écoute du changement d'image
 function ecouteAjoutImage() {
     const fileBouton = document.getElementById("fileBouton");
     const fileInput = document.getElementById("fileInput");
-    const fileImage = document.getElementById("fileImage");
+    const fileImage = document.getElementById("fileElement");
     const fileTexte = document.getElementById("fileTexte");
     const imageEnvoyee = document.getElementById("imageEnvoyee");
     fileBouton.addEventListener("click", function(event) {
@@ -651,8 +740,6 @@ function ecouteAjoutImage() {
                 // on lit l'image sous forme de Data URL (binaire codé en base64)
                 reader.readAsDataURL(file);
                 imageEnvoyee.classList.add("flex");
-                // on réinitialise la valeur de fileImput pour détecter à nouveau le changement
-                fileInput.value = "";
             } else {
             }
         });
@@ -663,10 +750,10 @@ function ecouteAjoutImage() {
 // Fonction écoute du bouton Ajout
 function ecouteAjout(){
     const ajoutElement = document.getElementById("boutonAjout");
-    ajoutElement.addEventListener('click', () => {
+    ajoutElement.addEventListener("click", function() {
         // on réaffiche la modale différemment
         document.getElementById("titreModale").innerText = "Ajout photo";
-        document.getElementById("retourModaleI").classList.add("flex");
+        document.getElementById("divI").classList.add("flex");
         document.getElementById("modalForm").classList.add("flex");
         document.getElementById("boutonsModale").classList.add("boutonModale2");
         document.getElementById("modaleListe").classList.remove("flex");
@@ -674,6 +761,69 @@ function ecouteAjout(){
     });
 }
 
+//*********************************************************
+// Fonction écoute du bouton Valider l'ajout
+function ecouteValider(){
+    const validerElement = document.getElementById("boutonValider");
+    validerElement.addEventListener("click", async function(event) {
+        event.preventDefault();
+        const fichierSource = document.getElementById("fileInput");
+        const titre = document.getElementById("titreInput");
+        const categorie = document.getElementById("categorieInput").value;
+        const categories = extraitCategories();
+        let categorieId = 0;
+        for (let i = 0 ; i < categories.length ; i++) {
+            if (categories[i] === categorie) {
+                categorieId = (i + 1);
+            }
+        }
+        // création du fichier json
+        const donnees = new FormData();
+        donnees.append("image", fichierSource.files[0]);
+        donnees.append("title", titre.value);
+        donnees.append("category", categorieId);
+
+        // Envoi de la requête POST à l'API
+        try {
+            const reponse = await fetch("http://localhost:5678/api/works", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem("authToken")}`
+                },
+                body: donnees
+            });
+            if (!reponse.ok) {
+                throw new Error(`Erreur HTTP ! Statut : ${reponse.status}`);
+            }
+            const data = await reponse.json();
+            // ajout de l'image au DOM
+            // actualise l'affichage des works avec la nouvelle image
+            const nouvelleImage = {
+                "id": parseInt(data.id),
+                "imageUrl": data.imageUrl,
+                "title": data.title,
+                "category": {
+                    "id": parseInt(data.categoryId),
+                    "name": categorie
+                }
+            }
+            works = traitementWorks(works, nouvelleImage);
+            // affichage des nouveaux works
+            affichageWorks(works);
+            // affichage de la nouvelle modale
+            affichageWorksModale();
+            // écoute de la nouvelle poubelle
+            ecoutePoubelle();
+            // fermeture et réinitialisation de la modale
+            const modale = document.getElementById("modale");
+            modale.classList.remove("flex");
+            retourModale();
+
+        } catch (erreur) {
+            console.error("Une erreur s'est produite :", erreur);
+        }
+    });
+}
 
 //*********************************************************
 //*********************************************************

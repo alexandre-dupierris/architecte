@@ -285,8 +285,8 @@ li:hover {
 
 /** modale **/
 #modale {
-	align-items: center;
 	justify-content: center;
+	align-items: center;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -294,16 +294,12 @@ li:hover {
 	height: 100vh;
 	background-color: #0000004D;
 }
-.none {
-	display: none;
-}
-.flex {
-	display: flex;
-}
 #fenetreModale {
 	display: flex;
 	flex-direction: column;
+	justify-content: center;
 	width: 50%;
+	height: 80vh;
 	background-color: white;
 	border-radius: 10px;
 	align-items: center;
@@ -331,22 +327,21 @@ li:hover {
 #modaleListe {
 	flex-direction: row;
 	width: 70%;
-	height: calc(100% - 40px);
 	flex-wrap: wrap;
 	overflow: auto;
 	border-bottom: 1px solid #B3B3B3;
 	margin-bottom: 20px;
 }
-#fiche {
+.fiche {
 	width: calc(20% - 10px);
 	margin: 5px;
 	position: relative;
 	margin-bottom: 20px;
 }
-#fiche img {
+.fiche img {
 	width: 100%;
 }
-#fiche i {
+.fiche i {
 	position: absolute;
 	top: 5%;
 	right: 5%;
@@ -468,6 +463,13 @@ input[type="submit"]{
 	width: 180px;
 	text-align: center;
 	border-radius: 60px ;
+}
+
+.none {
+	display: none;
+}
+.flex {
+	display: flex;
 }
 
 /** footer **/
