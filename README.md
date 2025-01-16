@@ -82,6 +82,7 @@ fichiers javascript décomposés en plusieurs fonctions :
 		enregistre l'image dans la bibliothèque, réinitialise et ferme la modale
 		appelle le nouvel affichage des works en main et dans la modale,
 		appelle l'actualisation des boutons supprimer
+		- fonction de vérification des champs, appelée avant l'affichage du bouton valider
 
 	- partie gestion du token : 
 		- fonction qui vérifie l'état du token, appelée lors des affichages des header et main

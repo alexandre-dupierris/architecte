@@ -280,7 +280,7 @@ li:hover {
 }
 .gallery img {
 	width: 100%;
-
+	object-fit: cover;
 }
 
 /** modale **/
@@ -299,7 +299,6 @@ li:hover {
 	flex-direction: column;
 	justify-content: center;
 	width: 50%;
-	height: 80vh;
 	background-color: white;
 	border-radius: 10px;
 	align-items: center;
@@ -327,6 +326,7 @@ li:hover {
 #modaleListe {
 	flex-direction: row;
 	width: 70%;
+	height: 50vh;
 	flex-wrap: wrap;
 	overflow: auto;
 	border-bottom: 1px solid #B3B3B3;
@@ -340,6 +340,7 @@ li:hover {
 }
 .fiche img {
 	width: 100%;
+	object-fit: cover;
 }
 .fiche i {
 	position: absolute;
@@ -379,14 +380,15 @@ label{
 	width: 100%;
 	text-align: start;
 }
-#fileLabel {
+#fileContenu {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	text-align: center;
 	background-color: #E8F1F6;
-	font-size: 4rem;
+	color: #B9C5CC;
 	width: 100%;
+	margin-bottom: 20px;
 }
 #fileBouton {
 	width: 50%;
@@ -401,6 +403,7 @@ label{
 }
 #fileImage {
 	margin-top: 10px;
+	font-size: 4rem;
 }
 #imageEnvoyee {
 	width: 100%;
@@ -421,6 +424,11 @@ label{
 }
 #boutonValider {
 	width: 50%;
+}
+#boutonValider:disabled {
+	background-color:#A7A7A7;
+	color: white;
+	border: none;
 }
 
 /** contact **/
