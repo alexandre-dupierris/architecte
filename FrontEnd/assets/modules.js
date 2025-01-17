@@ -1,5 +1,23 @@
 // ********** gestion des works de l'architecte et de leurs filtres
 
+// Fonction de récupération des categories via l'API
+async function fetchCategories() {
+    try {
+        const reponse = await fetch("http://localhost:5678/api/categories");
+        if (!reponse.ok) {
+            throw new Error(`Erreur HTTP : ${reponse.status}`);
+        }
+        const categories = await reponse.json();
+        let categoriesTable = [];
+        for(i = 0 ; i < categories.length ; i++){
+            categoriesTable.push(categories[i].name);
+        }
+        return categoriesTable;
+    } catch (error) {
+        alert("Erreur lors de la récupération des données");
+    }
+}
+
 // Fonction de récupération des works via l'API
 async function fetchWorks() {
     try {
@@ -23,7 +41,9 @@ function traitementWorks(works, nouvelleImage){
             "id": works[i].id,
             "imageUrl": works[i].imageUrl,
             "title": works[i].title,
-            "category": works[i].category,
+            "category": {
+                "name": works[i].category.name.replace(/\s+/g, '_')
+            }
         }
     }
     if (nouvelleImage !== null) {
@@ -31,7 +51,9 @@ function traitementWorks(works, nouvelleImage){
             "id": nouvelleImage.id,
             "imageUrl": nouvelleImage.imageUrl,
             "title": nouvelleImage.title,
-            "category": nouvelleImage.category
+            "category": {
+                "name": nouvelleImage.category.name
+            }
         });
     }
     return worksSimples;
@@ -44,13 +66,13 @@ function affichageWorks(worksFiltres) {
     if (worksFiltres === "Tous") {
         worksFiltres = works;
     }
-    for (let i = 0 ; i < worksFiltres.length ; i++){
+    for (let workfiltre of worksFiltres){
         const figureElement = document.createElement("figure");
         const imageElement = document.createElement("img");
-        imageElement.src = worksFiltres[i].imageUrl;
+        imageElement.src = workfiltre.imageUrl;
         imageElement.alt = `image ${imageElement.src}`;
         const titreElement = document.createElement("figcaption");
-        titreElement.innerText = worksFiltres[i].title;
+        titreElement.innerText = workfiltre.title;
         gallery.appendChild(figureElement);
         figureElement.appendChild(imageElement);
         figureElement.appendChild(titreElement);
@@ -59,9 +81,9 @@ function affichageWorks(worksFiltres) {
 
 // Fonction d'extraction des catégories par nom
 function extraitCategories() {
-    let categories = new Array();
-    for (let i = 0 ; i < works.length ; i++) {
-        const categorie = works[i].category.name;
+    let categories = [];
+    for (let work of works) {
+        const categorie = work.category.name;
         categories.push(categorie);
     }
     categories = [...new Set(categories)];
@@ -78,8 +100,8 @@ function affichageFiltres(){
     filtres.appendChild(boutonTous);
     for (let i = 0 ; i < categories.length ; i++) {
         const boutonCategorie = document.createElement("button");
-        boutonCategorie.id = `filtreCategorie${i+1}`;
-        boutonCategorie.innerText = categories[i];
+        boutonCategorie.id = `categorie_${categories[i]}`;
+        boutonCategorie.innerText = categories[i].replace(/_/g, ' ');
         filtres.appendChild(boutonCategorie);
     }
 }
@@ -90,12 +112,12 @@ function ecouteBoutonsFiltres(){
     for (const boutonFiltrer of boutons) {
         boutonFiltrer.addEventListener("click", function() {
             const worksFiltres = works.filter(function (work) {
-                const categorie = boutonFiltrer.id;
+                const categorie = boutonFiltrer.id.replace(/^categorie_\s*/i, '');
                 if (categorie === "boutonTous"){
                     return true;
                 }
                 else {
-                    return work.category.id === parseInt(categorie.replace(/[a-zA-Z]/g, ''));
+                    return work.category.name === categorie;
                 }
             });
             document.querySelector(".gallery").innerHTML = "";
@@ -186,6 +208,10 @@ function connexion() {
         const email = document.getElementById("connexionEmail").value;
         const password = document.getElementById("connexionPassword").value;
         const formulaire = document.getElementById("loginForm");
+        const ancienMessage = document.getElementById("reponseMessage");
+        if (ancienMessage) {
+            ancienMessage.remove();
+        }
         const validationErreur = document.createElement("p");
         validationErreur.id = "reponseMessage";
         formulaire.appendChild(validationErreur);
@@ -396,7 +422,7 @@ function retourModale() {
 }
 
 // Fonction pour construire la modale avec 2 états "galerie photo" et "ajouter photo"
-function construireModale() {
+async function construireModale() {
     const modale = document.createElement("aside");
     modale.id = "modale";
     modale.role = "dialog";
@@ -480,15 +506,14 @@ function construireModale() {
     const categorieInput = document.createElement("select");
     categorieInput.id = "categorieInput";
     categorieInput.required = true;
-    const categories = extraitCategories();
     const categorieOptionVide = document.createElement("option");
     categorieOptionVide.value = "";
     categorieOptionVide.innerText = "";
     categorieInput.appendChild(categorieOptionVide);
-    for (let categorie of categories) {
+    for (let categorie of toutesCategories) {
         const categorieOption = document.createElement("option");
         categorieOption.value = categorie;
-        categorieOption.innerText = categorie;
+        categorieOption.innerText = categorie.replace(/_/g, ' ');
         categorieInput.appendChild(categorieOption);
     }
 
@@ -634,15 +659,14 @@ function ecouteAjout(){
 }
 
 // Fonction écoute du bouton Valider l'ajout
-function ecouteValider(){
+async function ecouteValider(){
     const validerElement = document.getElementById("boutonValider");
     validerElement.addEventListener("click", async function(event) {
         event.preventDefault();
         const categorie = document.getElementById("categorieInput").value;
-        const categories = extraitCategories();
         let categorieId = 0;
-        for (let i = 0 ; i < categories.length ; i++) {
-            if (categories[i] === categorie) {
+        for (let i = 0 ; i < toutesCategories.length ; i++) {
+            if (toutesCategories[i] === categorie) {
                 categorieId = (i + 1);
             }
         }
@@ -667,8 +691,7 @@ function ecouteValider(){
                 "imageUrl": donnees.imageUrl,
                 "title": donnees.title,
                 "category": {
-                    "id": parseInt(donnees.categoryId),
-                    "name": categorie
+                    "name": categorie.replace(/\s+/g, '_')
                 }
             }
             works = traitementWorks(works, nouvelleImage);
@@ -679,7 +702,7 @@ function ecouteValider(){
             retourModale();
 
         } catch (erreur) {
-            alert("Les champs ne sont pas remplis correctement");
+            alert("Les champs ne sont pas remplis correctement : " + erreur);
         }
     });
 }

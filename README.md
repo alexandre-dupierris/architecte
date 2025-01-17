@@ -11,7 +11,7 @@ Le front-end :
 fichiers javascript décomposés en plusieurs fonctions :
 
 * dans le fichier script.js :
-	- déclaration de la variable globale accueillant les données de l'API
+	- déclaration des variables globales accueillant les données de l'API
 	- puis attribution des valeurs à la variable
 	- puis appel des fonctions d'affichage des header et main
 	- appel enfin de la fonction qui construit la modale
@@ -19,8 +19,10 @@ fichiers javascript décomposés en plusieurs fonctions :
 * dans le fichier modules.js :
 
 	- partie gestion des works de l'architecte et de leurs filtres :
+		- fonction qui récupère les catégories sur le serveur via l'API,
+		appelée une seule fois dès l'arrivée sur la page
 		- fonction qui récupère les works de l'architecte sur le serveur via l'API,
-		appelée dès l'arrivée sur la page
+		appelée une seule fois dès l'arrivée sur la page
 		elle appelle la fonction de traitement des works
 		- fonction qui traite les works,
 		appelée lors de l'attribution des valeurs à la variable globale
