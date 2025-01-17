@@ -4,7 +4,5 @@ async function main() {
     affichageHeader();
     construireModale();
     affichageMain();
-
 }
-
 main();

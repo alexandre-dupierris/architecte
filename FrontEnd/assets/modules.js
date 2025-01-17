@@ -104,8 +104,7 @@ function ecouteBoutonsFiltres(){
     }
 }
 
-//*********************************************************
-//  gestion des boutons du navigateur
+// ********** gestion des boutons du navigateur
 
 // Fonction d'écoute des boutons li de nav : login ou projets
 function ecouteLiBouton(bouton) {

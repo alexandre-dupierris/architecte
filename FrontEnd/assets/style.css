@@ -50,7 +50,6 @@ table {
 	border-spacing: 0;
 }
 /** end reset css**/
-
 /** éléments de base **/
 body {
 	max-width: 1440px;
@@ -82,7 +81,6 @@ header {
 section {
 	margin: 50px 0
 }
-
 /** mode edition **/
 .edition {
 	display: none;
@@ -122,7 +120,6 @@ h2{
 	font-size: 30px;
 	color: #1D6154;
 }
-
 /** navigation **/
 nav ul {
 	display: flex;
@@ -141,7 +138,6 @@ li:hover {
 .boldElement {
 	font-weight: 700;
 }
-
 /** login **/
 #loginForm {
 	display: flex;
@@ -183,7 +179,6 @@ li:hover {
 	color:#B1663C;
 	margin-top: 20px;
 }
-
 /** introduction **/
 #introduction {
 	display: flex;
@@ -210,7 +205,6 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
-
 /** portfolio **/
 #portfolio > div:first-of-type h2 {
 	text-align: center;
@@ -223,7 +217,6 @@ li:hover {
 	margin-bottom: 1em;
 	gap: 20px;
 }
-
 /** bouton modifier **/
 #modifier {
 	flex-direction: row;
@@ -239,8 +232,6 @@ li:hover {
 .modifierVisible {
 	display: flex;
 }
-
-
 /** filtres **/
 .margin {
 	margin-top: 50px;
@@ -269,7 +260,6 @@ li:hover {
 	color: white;
 	background-color:#1D6154;
 }
-
 /** galerie **/
 .gallery {
 	width: 100%;
@@ -282,7 +272,6 @@ li:hover {
 	width: 100%;
 	object-fit: cover;
 }
-
 /** modale **/
 #modale {
 	justify-content: center;
@@ -369,7 +358,6 @@ li:hover {
 	color: #1D6154;
 	background-color: white;
 }
-
 /** modale formulaire **/
 #modalForm {
 	flex-direction: column;
@@ -430,7 +418,6 @@ label{
 	color: white;
 	border: none;
 }
-
 /** contact **/
 #contact {
 	width: 50%;
@@ -472,18 +459,15 @@ input[type="submit"]{
 	text-align: center;
 	border-radius: 60px ;
 }
-
 .none {
 	display: none;
 }
 .flex {
 	display: flex;
 }
-
 /** footer **/
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
 	margin: 2em
 }
-
